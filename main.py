@@ -18,7 +18,6 @@ class Student:
         else:
             return 'Ошибка'
 
-
     def avr_rating(self):  # средний балл
         sum_grades = 0
         len_grades = 0
@@ -37,6 +36,16 @@ class Student:
             print("Сравниваем только студентов со студентами и лекторов с лекторами!")
             return
         return self.avr_rating() < other.avr_rating()
+
+    def av_rating_for_course(self,course):
+        sum_grades = 0
+        len_grades = 0
+        for cour in self.grades.keys(): # так как название курса это ключ
+            if cour == course:
+                sum_grades += sum(self.grades[course])
+                len_grades += len(self.grades[course])
+        average_rating = round(sum_grades / len_grades, 2)
+        return average_rating
 
 class Mentor:
     def __init__(self, name, surname):
@@ -58,7 +67,6 @@ class Lecturer(Mentor):
         avg_rating =round(sum_grades/len_grades,1)
         return avg_rating
 
-
     def __str__(self):
         res = f'Имя: {self.name}\nФамилия: {self.surname}\nСредний балл за курс: {self.avr_rating()}'
         return res
@@ -68,6 +76,16 @@ class Lecturer(Mentor):
             print("Сравниваем только студентов со студентами и лекторов с лекторами!")
             return
         return self.avr_rating() < other.avr_rating()
+
+    def av_rating_for_course(self,course): #тоже самое для лекторов
+        sum_grades = 0
+        len_grades = 0
+        for cour in self.grades.keys(): # так как название курса это ключ
+            if cour == course:
+                sum_grades += sum(self.grades[course])
+                len_grades += len(self.grades[course])
+        average_rating = round(sum_grades / len_grades, 2)
+        return average_rating
 
 class Reviewer(Mentor): #эксперты, проверяющие домашние задания
 
@@ -110,9 +128,32 @@ best_reviewer.rate_hw(best_student, 'Python', 9)
 best_student.rate_lectorer(best_lectorer,'Python',87)
 best_student.rate_lectorer(best_lectorer,'Python',57)
 
-print(best_student)
+student_list = [best_student,best_student_girl]
+best_lecturers_list = [best_lectorer,best_lectorer_lead]
 
+#4 для подсчета средней оценки за домашние задания по всем студентам в рамках конкретного курса
 
-# print(student1.courses_in_progress)
+def avg_grades_all_stusent(students_list,course):
+    sum_grades = 0
+    len_grades = 0
+    for student in students_list:
+        if course in student.grades:
+            study_sum_grades = student.av_rating_for_course(course)
+            sum_grades += study_sum_grades
+            len_grades += 1
+        average_rating = round(sum_grades/ len_grades, 2)
+        return average_rating
 
+def avg_grades_all_lecturers(lecturers_list,course):
+    sum_grades = 0
+    len_grades = 0
+    for lect in lecturers_list:
+        if course in lect.grades:
+            study_sum_grades = lect.av_rating_for_course(course)
+            sum_grades += study_sum_grades
+            len_grades += 1
+        average_rating = round(sum_grades/ len_grades, 2)
+        return average_rating
 
+print(avg_grades_all_stusent(student_list,"Python"))
+print(avg_grades_all_lecturers(best_lecturers_list,"Python"))
